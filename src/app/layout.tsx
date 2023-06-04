@@ -1,5 +1,7 @@
 import "./globals.css"
 import { Inter } from "next/font/google"
+import { Providers } from "@/components/Providers"
+import { SignInButton } from "@/components/SignInButton"
 
 const inter = Inter({ subsets: ["latin"] })
 
@@ -16,7 +18,10 @@ export default async function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className} bg-slate-800 text-slate-100`}>
-        {children}
+        <Providers>
+          <SignInButton />
+          {children}
+        </Providers>
       </body>
     </html>
   )

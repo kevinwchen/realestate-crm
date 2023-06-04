@@ -1,5 +1,3 @@
-import prisma from "@/lib/prisma"
-import { PrismaAdapter } from "@next-auth/prisma-adapter"
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
@@ -19,16 +17,15 @@ const handler = NextAuth({
       },
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
-        const res = await fetch("/api/login", {
+        const res = await fetch("http://localhost:3000/api/login", {
           method: "POST",
           headers: {
-            "Content-Type": "application/json"
-
+            "Content-Type": "application/json",
           },
           body: JSON.stringify({
             username: credentials?.username,
-            password: credentials?.password
-          })
+            password: credentials?.password,
+          }),
         })
 
         const user = await res.json()
