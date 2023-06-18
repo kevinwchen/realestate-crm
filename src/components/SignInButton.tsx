@@ -5,6 +5,7 @@ import React from "react"
 
 export const SignInButton = () => {
   const { data: session } = useSession()
+  console.log(session?.user)
 
   if (session && session.user) {
     return (
