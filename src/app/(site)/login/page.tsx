@@ -12,9 +12,7 @@ export default function Login() {
 
   const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
-    signIn("credentials", { ...data, redirect: false }).then(() =>
-      alert("User has been logged in")
-    )
+    signIn("credentials", { ...data, redirect: true })
   }
 
   return (
