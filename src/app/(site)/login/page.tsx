@@ -1,4 +1,22 @@
+"use client"
+
+import { useState } from "react"
+import { signIn } from "next-auth/react"
+import { FcGoogle } from "react-icons/fc"
+
 export default function Login() {
+  const [data, setData] = useState({
+    email: "",
+    password: "",
+  })
+
+  const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    signIn("credentials", { ...data, redirect: false }).then(() =>
+      alert("User has been logged in")
+    )
+  }
+
   return (
     <>
       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
@@ -16,7 +34,7 @@ export default function Login() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" action="#" method="POST">
+          <form className="space-y-6" onSubmit={loginUser}>
             <div>
               <label
                 htmlFor="email"
@@ -30,6 +48,8 @@ export default function Login() {
                   name="email"
                   type="email"
                   autoComplete="email"
+                  value={data.email}
+                  onChange={(e) => setData({ ...data, email: e.target.value })}
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -59,6 +79,10 @@ export default function Login() {
                   name="password"
                   type="password"
                   autoComplete="current-password"
+                  value={data.password}
+                  onChange={(e) =>
+                    setData({ ...data, password: e.target.value })
+                  }
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
                 />
@@ -74,6 +98,15 @@ export default function Login() {
               </button>
             </div>
           </form>
+
+          <div>
+            <button
+              onClick={() => signIn("google")}
+              className="mt-4 flex w-full justify-center rounded-md border-2 border-slate-900 bg-slate-100 px-3 py-1.5 text-sm font-semibold leading-6 text-slate-900 shadow-sm hover:bg-slate-200 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-900"
+            >
+              <FcGoogle className="text-2xl mr-2" /> Continue with Google
+            </button>
+          </div>
 
           <p className="mt-10 text-center text-sm text-gray-500">
             Don't have an account?{" "}

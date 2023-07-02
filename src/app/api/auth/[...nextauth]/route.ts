@@ -1,3 +1,5 @@
+// import axios from "axios"
+import prisma from "@/lib/prisma"
 import NextAuth from "next-auth"
 import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
@@ -12,18 +14,23 @@ const handler = NextAuth({
       // e.g. domain, username, password, 2FA token, etc.
       // You can pass any HTML attribute to the <input> tag through the object.
       credentials: {
-        username: { label: "Username", type: "text", placeholder: "jsmith" },
+        email: {
+          label: "Email",
+          type: "text",
+          placeholder: "jsmith@email.com",
+        },
         password: { label: "Password", type: "password" },
       },
+
       async authorize(credentials, req) {
         // Add logic here to look up the user from the credentials supplied
-        const res = await fetch("http://localhost:3000/api/login", {
+        const res = await fetch(`${process.env.NEXTAUTH_URL}/api/login`, {
           method: "POST",
           headers: {
             "Content-Type": "application/json",
           },
           body: JSON.stringify({
-            username: credentials?.username,
+            email: credentials?.email,
             password: credentials?.password,
           }),
         })
@@ -35,6 +42,7 @@ const handler = NextAuth({
           return user
         } else {
           // If you return null then an error will be displayed advising the user to check their details.
+          console.log("Error")
           return null
 
           // You can also Reject this callback with an Error thus the user will be sent to the error page with the error message as a query parameter
@@ -63,6 +71,26 @@ const handler = NextAuth({
       // Allows callback URLs on the same origin
       else if (new URL(url).origin === baseUrl) return url
       return baseUrl
+    },
+    async signIn({ user, account, profile, email, credentials }) {
+      if (account?.provider !== "credentials") {
+        console.log(account?.provider)
+        try {
+          const userExist = await prisma.user.findUnique({
+            where: {
+              email: profile?.email,
+            },
+          })
+          if (!userExist) {
+            // Add user and provider account in db
+          }
+        } catch (error) {
+          console.log(error)
+          return false
+        }
+      }
+      console.log("credentials provider used")
+      return true
     },
   },
   // debug: process.env.NODE_ENV === "development",
