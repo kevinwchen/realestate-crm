@@ -5,6 +5,10 @@ import CredentialsProvider from "next-auth/providers/credentials"
 import GoogleProvider from "next-auth/providers/google"
 
 const handler = NextAuth({
+  pages: {
+    signIn: "/signin",
+    error: "/error",
+  },
   providers: [
     CredentialsProvider({
       // The name to display on the sign in form (e.g. "Sign in with...")
@@ -66,10 +70,20 @@ const handler = NextAuth({
       return session
     },
     async redirect({ url, baseUrl }) {
+      console.log("redirect called")
+      console.log(url)
+      console.log(baseUrl)
       // Allows relative callback URLs
-      if (url.startsWith("/")) return `${baseUrl}${url}`
+      if (url.startsWith("/")) {
+        console.log("from login")
+        return `${baseUrl}/dashboard`
+      }
       // Allows callback URLs on the same origin
-      else if (new URL(url).origin === baseUrl) return url
+      else if (new URL(url).origin === baseUrl) {
+        console.log("here 2")
+        console.log(url)
+        return `${baseUrl}/dashboard`
+      }
       return baseUrl
     },
     async signIn({ user, account, profile, email, credentials }) {
@@ -89,7 +103,6 @@ const handler = NextAuth({
           return false
         }
       }
-      console.log("credentials provider used")
       return true
     },
   },

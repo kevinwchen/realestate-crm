@@ -4,13 +4,13 @@ import { useState } from "react"
 import { signIn } from "next-auth/react"
 import { FcGoogle } from "react-icons/fc"
 
-export default function Login() {
+export default function SignIn() {
   const [data, setData] = useState({
     email: "",
     password: "",
   })
 
-  const loginUser = async (e: React.FormEvent<HTMLFormElement>) => {
+  const signInUser = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault()
     signIn("credentials", { ...data, redirect: true })
   }
@@ -32,7 +32,7 @@ export default function Login() {
         </div>
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
-          <form className="space-y-6" onSubmit={loginUser}>
+          <form className="space-y-6" onSubmit={signInUser}>
             <div>
               <label
                 htmlFor="email"
