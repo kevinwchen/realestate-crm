@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { FormEvent, useState } from "react";
 import { useSignUp } from "@clerk/nextjs";
 import { useRouter } from "next/navigation";
 
@@ -16,7 +16,7 @@ const RegisterPage = () => {
   const [error, setError] = useState(null);
 
   // Form Submit
-  const handleSubmit = async (e) => {
+  const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (!isLoaded) {
@@ -32,7 +32,9 @@ const RegisterPage = () => {
           password: password,
         })
         .then((res) => console.log("response", res))
-        .catch((err) => setError(err.errors[0].message));
+        .catch((err) => {
+          setError(err.errors[0].longMessage);
+        });
 
       // send the email.
       await signUp.prepareEmailAddressVerification({ strategy: "email_code" });
@@ -45,7 +47,7 @@ const RegisterPage = () => {
   };
 
   // Verify User Email Code
-  const onPressVerify = async (e) => {
+  const onPressVerify = async (e: FormEvent<HTMLButtonElement>) => {
     e.preventDefault();
     if (!isLoaded) {
       return;
@@ -55,14 +57,13 @@ const RegisterPage = () => {
       const completeSignUp = await signUp.attemptEmailAddressVerification({
         code,
       });
-      if (completeSignUp.status !== "complete") {
-        /*  investigate the response, to see if there was an error
-         or if the user needs to complete more steps.*/
-        console.log(JSON.stringify(completeSignUp, null, 2));
-      }
       if (completeSignUp.status === "complete") {
         await setActive({ session: completeSignUp.createdSessionId });
         router.push("/");
+      } else {
+        /*  investigate the response, to see if there was an error
+           or if the user needs to complete more steps.*/
+        console.log(JSON.stringify(completeSignUp, null, 2));
       }
     } catch (err) {
       console.error(JSON.stringify(err, null, 2));
@@ -70,7 +71,7 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="border p-5 rounded" style={{ width: "500px" }}>
+    <div className="border p-5 rounded" style={{ width: "80vw" }}>
       <h1 className="text-2xl mb-4">Register</h1>
       {!pendingVerification && (
         <form onSubmit={handleSubmit} className="space-y-4 md:space-y-6">
