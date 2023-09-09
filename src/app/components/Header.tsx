@@ -5,7 +5,7 @@ import { UserButton, auth } from "@clerk/nextjs";
 const Header = () => {
   const { userId } = auth();
   return (
-    <>
+    <header className="h-10">
       <nav className="bg-blue-700 py-4 px-6 flex items-center justify-between mb-5">
         <div className="flex items-center">
           <Link href="/">
@@ -29,6 +29,12 @@ const Header = () => {
               >
                 Sign Up
               </Link>
+              <Link
+                href="register"
+                className="text-gray-300 hover:text-white mr-4"
+              >
+                Register
+              </Link>
             </>
           )}
           {userId && (
@@ -44,7 +50,7 @@ const Header = () => {
           </div>
         </div>
       </nav>
-    </>
+    </header>
   );
 };
 
